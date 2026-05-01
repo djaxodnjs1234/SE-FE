@@ -134,7 +134,7 @@ export const CommentFormation = ({
           </Text>
           {comment.attachments && comment.attachments.length > 0 && (
             <SimpleGrid
-              columns={Math.min(comment.attachments.length, 4)}
+              columns={Math.min(comment.attachments.length, 3)}
               gap="8px"
               mt="10px"
             >
@@ -144,10 +144,11 @@ export const CommentFormation = ({
                   src={att.url}
                   alt={att.originalFileName}
                   w="100%"
-                  h="100px"
-                  objectFit="cover"
+                  maxH="240px"
+                  objectFit="contain"
                   borderRadius="6px"
                   cursor="pointer"
+                  bg="gray.50"
                   onClick={() => handleImageClick(att.url)}
                   _hover={{ opacity: 0.85 }}
                 />
