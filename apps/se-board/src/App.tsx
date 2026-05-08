@@ -24,6 +24,8 @@ import {
 } from "./pages/admin";
 import { MemberManagePage } from "./pages/admin/member/MemberManagePage";
 import PostManagePage from "./pages/admin/post/PostManagePage";
+import RecruitManagePage from "./pages/admin/RecruitManagePage";
+import SkillManagePage from "./pages/admin/SkillManagePage";
 import { BoardPage } from "./pages/board/BoardPage";
 import { PasswordChangeWithoutLoginPage } from "./pages/login";
 import { MainPage } from "./pages/main/MainPage";
@@ -37,6 +39,9 @@ import { PasswordChangepage } from "./pages/profile/PasswordChangePage";
 import { ProfilePostListPage } from "./pages/profile/PostListPage";
 import { ProfilePage } from "./pages/profile/ProfilePage";
 import { WithdrawalPage } from "./pages/profile/WithdrawalPage";
+import { RecruitDetailPage } from "./pages/recruit/RecruitDetailPage";
+import { RecruitFormPage } from "./pages/recruit/RecruitFormPage";
+import { RecruitListPage } from "./pages/recruit/RecruitListPage";
 import { useFetchMenuList } from "./react-query/hooks/useMenu";
 import { useFetchUserSimpleInfo } from "./react-query/hooks/useProfile";
 import { menuListState } from "./store/menu";
@@ -72,6 +77,20 @@ const MenuRouter = () => {
           path: `${menu.urlId}/:postId/modify`,
           element: <NoticeWrite />,
         });
+      } else if (menu.type === "RECRUIT") {
+        list.push({ path: menu.urlId, element: <RecruitListPage /> });
+        list.push({
+          path: `${menu.urlId}/:id`,
+          element: <RecruitDetailPage />,
+        });
+        list.push({
+          path: `${menu.urlId}/write`,
+          element: <RecruitFormPage />,
+        });
+        list.push({
+          path: `${menu.urlId}/:id/edit`,
+          element: <RecruitFormPage />,
+        });
       } else if (menu.type === "MENU") {
         menu.subMenu
           .filter((v) => v.type === "BOARD")
@@ -105,6 +124,11 @@ const MenuRouter = () => {
       children: [
         ...dynamicRoutes,
         { path: "", element: <MainPage /> },
+
+        { path: "/recruit", element: <RecruitListPage /> },
+        { path: "/recruit/write", element: <RecruitFormPage /> },
+        { path: "/recruit/:id", element: <RecruitDetailPage /> },
+        { path: "/recruit/:id/edit", element: <RecruitFormPage /> },
 
         {
           path: "/posts/:postId",
@@ -208,6 +232,14 @@ const MenuRouter = () => {
         {
           path: "mainPageMenu",
           element: <MainPageSetting />,
+        },
+        {
+          path: "skills",
+          element: <SkillManagePage />,
+        },
+        {
+          path: "recruit",
+          element: <RecruitManagePage />,
         },
         {
           path: "*",

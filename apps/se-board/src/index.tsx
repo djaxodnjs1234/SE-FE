@@ -1,3 +1,6 @@
+// CKEditor content styles — 에디터 밖에서 위지윅 콘텐츠 렌더링에 필요
+import "./styles/ck-content.css";
+
 import { ColorModeScript } from "@chakra-ui/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { QueryClientProvider } from "@tanstack/react-query";

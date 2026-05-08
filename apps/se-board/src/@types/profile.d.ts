@@ -14,12 +14,28 @@ declare module "@types" {
     acquiredAt: string;
   }
 
+  interface DeveloperProfileInfo {
+    id: number;
+    intro: string | null;
+    githubUrl: string | null;
+    portfolioUrl: string | null;
+    grade: string | null;
+    readmeContent: string | null;
+    skills: {
+      id: number;
+      name: string;
+      category: string;
+      iconSlug: string | null;
+    }[];
+  }
+
   interface FetchUserSimpleInfoResponse {
     nickname: string;
     email: string;
     userId: number;
     roles: string[];
     profileImageUrl: string | null;
+    developerProfile: DeveloperProfileInfo | null;
   }
 
   interface FetchUserProfileReqsponse {
@@ -33,5 +49,6 @@ declare module "@types" {
     equippedFrame: FrameInfo | null;
     badgeType: "CHECK" | "KUMOH_CROW" | null;
     badgeLabel: string | null;
+    developerProfile: DeveloperProfileInfo | null;
   }
 }

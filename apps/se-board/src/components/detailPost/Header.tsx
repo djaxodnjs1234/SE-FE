@@ -2,7 +2,6 @@ import {
   Box,
   Flex,
   Heading,
-  HStack,
   Icon,
   Menu,
   MenuButton,
@@ -68,10 +67,10 @@ const AuthorInfoMenuList = ({
   return (
     <Menu autoSelect={false}>
       <MenuButton cursor={id ? "pointer" : "not-allowed"}>
-        <Box display="flex" alignItems="center" gap="4px">
+        <Box display="flex" alignItems="center" gap="6px">
           <GradientAvatar
             src={profileImageUrl ?? undefined}
-            size="xs"
+            size="sm"
             name={profileImageUrl ? undefined : name}
             gradientStart={frameGradientStart}
             gradientEnd={frameGradientEnd}
@@ -82,6 +81,7 @@ const AuthorInfoMenuList = ({
           <Text
             ml="2px"
             fontSize={{ base: "md", md: "lg" }}
+            fontWeight={"medium"}
             whiteSpace="nowrap"
           >
             {name}
@@ -136,8 +136,15 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
             w="fit-content"
             wordBreak="keep-all"
             color={color}
+            mb={4}
           >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
-          <HStack mt="4px" spacing="12px" color={color}>
+          <Flex
+            mb={6}
+            gap={4}
+            flexWrap="wrap"
+            alignItems="center"
+            color={color}
+          >
             <AuthorInfoMenuList
               id={HeadingInfo.author.loginId}
               name={HeadingInfo.author.name}
@@ -147,28 +154,31 @@ export const Header = ({ HeadingInfo }: HeaderProps) => {
               badgeType={HeadingInfo.author.badgeType}
               badgeLabel={HeadingInfo.author.badgeLabel}
             />
-
-            <Box display="flex" alignItems="baseline">
-              <Icon as={BsClock} boxSize="16px" my="auto" />
-              <Box ml="6px" fontSize="md">
+            <Text color={borderColor} userSelect="none">
+              |
+            </Text>
+            <Flex alignItems="center" gap={1.5}>
+              <Icon as={BsClock} />
+              <Text fontSize="sm">
                 {toYYYYMMDDHHhhss(HeadingInfo.createdAt)}
-              </Box>
+              </Text>
               {isModifiedContent(
                 HeadingInfo.createdAt,
                 HeadingInfo.modifiedAt
               ) && (
-                <Box ml="1px" fontSize="sm" color="gray.6">
+                <Text fontSize="xs" color="gray.6">
                   (수정됨)
-                </Box>
+                </Text>
               )}
-            </Box>
-            <Box display="flex">
-              <Icon as={BsFillEyeFill} boxSize="18px" my="auto" />
-              <Box ml="6px" fontSize="md">
-                {HeadingInfo.views}
-              </Box>
-            </Box>
-          </HStack>
+            </Flex>
+            <Text color={borderColor} userSelect="none">
+              |
+            </Text>
+            <Flex alignItems="center" gap={1.5}>
+              <Icon as={BsFillEyeFill} boxSize="15px" />
+              <Text fontSize="sm">{HeadingInfo.views}</Text>
+            </Flex>
+          </Flex>
         </Box>
       </Box>
     </Box>
@@ -192,15 +202,16 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
       borderBottom={`1px solid`}
       borderColor={borderColor}
     >
-      <Box p="1.5rem 0 1.5rem 1rem">
+      <Box p="1.5rem 0 1rem 1rem">
         <Heading
           as="h2"
           fontSize="1.625rem"
           w="fit-content"
           wordBreak="keep-all"
           color={color}
+          mb={4}
         >{`[${HeadingInfo.category}] ${HeadingInfo.title}`}</Heading>
-        <HStack mt="8px" spacing="12px" color={color}>
+        <Flex gap={4} flexWrap="wrap" alignItems="center" color={color}>
           <AuthorInfoMenuList
             id={HeadingInfo.author.loginId}
             name={HeadingInfo.author.name}
@@ -210,34 +221,36 @@ export const DesktopHeader = ({ HeadingInfo }: HeaderProps) => {
             badgeType={HeadingInfo.author.badgeType}
             badgeLabel={HeadingInfo.author.badgeLabel}
           />
-          <Box display="flex" alignItems="baseline">
-            <Icon as={BsClock} boxSize="20px" my="auto" />
-            <Box ml="6px" fontSize="lg">
-              {toYYYYMMDDHHhhss(HeadingInfo.createdAt)}
-            </Box>
+          <Text color={borderColor} userSelect="none">
+            |
+          </Text>
+          <Flex alignItems="center" gap={2}>
+            <Icon as={BsClock} />
+            <Text fontSize="md">{toYYYYMMDDHHhhss(HeadingInfo.createdAt)}</Text>
             {isModifiedContent(
               HeadingInfo.createdAt,
               HeadingInfo.modifiedAt
             ) && (
-              <Box ml="1px" fontSize="sm" color="gray.6">
+              <Text fontSize="sm" color="gray.6">
                 (수정됨)
-              </Box>
+              </Text>
             )}
-          </Box>
-          <Box display="flex">
-            <Icon as={BsFillEyeFill} boxSize="22px" my="auto" />
-            <Box ml="6px" fontSize="lg">
-              {HeadingInfo.views}
-            </Box>
-          </Box>
-        </HStack>
+          </Flex>
+          <Text color={borderColor} userSelect="none">
+            |
+          </Text>
+          <Flex alignItems="center" gap={2}>
+            <Icon as={BsFillEyeFill} boxSize="15px" />
+            <Text fontSize="md">{HeadingInfo.views}</Text>
+          </Flex>
+        </Flex>
       </Box>
       <Spacer />
       <Box display="flex" my="auto" color={color}>
         {!isBookmarked ? (
-          <Bookmark boxSize="32px" toggleBookmark={toggleBookmark} />
+          <Bookmark boxSize="24px" toggleBookmark={toggleBookmark} />
         ) : (
-          <BookmarkFill boxSize="32px" toggleBookmark={toggleBookmark} />
+          <BookmarkFill boxSize="24px" toggleBookmark={toggleBookmark} />
         )}
         <PostMoreButton
           postId={HeadingInfo.postId}

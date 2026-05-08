@@ -140,18 +140,26 @@ export const MenuDelete = ({ menuType, menuId }: MenuDeleteProps) => {
           </Heading>
         )}
         <Flex my="0.25rem" alignItems="center">
-          <Text wordBreak="keep-all">
-            메뉴를 삭제하면 다시 복구할 수 없습니다. 신중히 선택해 주세요.
-          </Text>
-          <Button
-            variant="danger"
-            ml="1rem"
-            size="sm"
-            isDisabled={menuType === "BOARD" ? !moveIsSuccess : false}
-            onClick={onOpen}
-          >
-            삭제
-          </Button>
+          {menuType === "RECRUIT" ? (
+            <Text wordBreak="keep-all" color={semanticColors.error}>
+              구인구직 메뉴는 삭제할 수 없습니다.
+            </Text>
+          ) : (
+            <>
+              <Text wordBreak="keep-all">
+                메뉴를 삭제하면 다시 복구할 수 없습니다. 신중히 선택해 주세요.
+              </Text>
+              <Button
+                variant="danger"
+                ml="1rem"
+                size="sm"
+                isDisabled={menuType === "BOARD" ? !moveIsSuccess : false}
+                onClick={onOpen}
+              >
+                삭제
+              </Button>
+            </>
+          )}
         </Flex>
       </Box>
       <DeleteAlert

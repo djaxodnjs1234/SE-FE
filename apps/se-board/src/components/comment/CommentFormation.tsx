@@ -26,7 +26,7 @@ import {
   AiOutlineDislike,
   AiOutlineLike,
 } from "react-icons/ai";
-import { BsArrowReturnRight, BsAt } from "react-icons/bs";
+import { BsArrowReturnRight } from "react-icons/bs";
 
 import { GradientAvatar } from "@/components/common/GradientAvatar";
 import { RoleBadge } from "@/components/common/RoleBadge";
@@ -61,6 +61,8 @@ export const CommentFormation = ({
   };
 
   const hoverColor = useColorModeValue("gray.0", "whiteAlpha.200");
+  const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+  const mutedColor = useColorModeValue("gray.5", "whiteAlpha.500");
 
   const { likeCount, dislikeCount, myReaction, toggleLike, toggleDislike } =
     useCommentLike(
@@ -74,7 +76,8 @@ export const CommentFormation = ({
     <Box w="100%" p="16px">
       {!isModify ? (
         <>
-          <Box display="flex" justifyContent="space-between">
+          {/* ── 작성자 | 날짜 | MoreButton — recruit 스타일로 한 행에 */}
+          <Flex alignItems="center" gap={3} mb={1.5} flexWrap="wrap">
             <AuthorInfoMenuList
               name={comment.author.name}
               authorId={comment.author.userId}
@@ -84,7 +87,18 @@ export const CommentFormation = ({
               badgeType={comment.author.badgeType}
               badgeLabel={comment.author.badgeLabel}
             />
-            <Box w="fit-content">
+            <Text color={borderColor} userSelect="none">
+              |
+            </Text>
+            <Flex alignItems="baseline" gap={1} color={mutedColor}>
+              <Text fontSize="sm">{toYYYYMMDDHHhh(comment.createdAt)}</Text>
+              {isModifiedContent(comment.createdAt, comment.modifiedAt) && (
+                <Text as="span" fontSize="xs" color="gray.6">
+                  (수정됨)
+                </Text>
+              )}
+            </Flex>
+            <Box ml="auto">
               {comment.isActive && (
                 <CommentMoreButton
                   isEditable={comment.isEditable}
@@ -94,47 +108,27 @@ export const CommentFormation = ({
                 />
               )}
             </Box>
-          </Box>
-          <Box display="inline-block" w="100%" mt="8px">
-            {tag && (
-              <Box
-                display="flex"
-                alignItems="center"
-                textAlign="center"
-                w="fit-content"
-                h="fit-content"
-                mr="6px"
-                mb="-2px"
-                p="1px 4px"
-                bgColor="blue.1"
-                color="blue.7"
-                borderRadius="10px"
-                float="left"
-              >
-                <BsAt fontSize="18px" />
-                <Text whiteSpace="nowrap">{tag}</Text>
-              </Box>
-            )}
-            <Text mb="-2px" textAlign="left" maxW="850px" whiteSpace="pre-line">
-              {comment.contents}
-            </Text>
-          </Box>
-          <Text
-            textAlign="left"
-            fontSize={{ base: "sm" }}
-            fontWeight="400"
-            mt="2px"
-          >
-            {toYYYYMMDDHHhh(comment.createdAt)}
-            {isModifiedContent(comment.createdAt, comment.modifiedAt) && (
-              <Text as="span" ml="0.25rem" color="gray.6">
-                (수정됨)
+          </Flex>
+
+          {/* ── 태그 (Recruit 스타일) */}
+          {tag && (
+            <Flex alignItems="center" gap={1} mb={1.5} color={mutedColor}>
+              <Icon as={BsArrowReturnRight} boxSize="1rem" />
+              <Text fontSize="md" color="blue.500" fontWeight="medium">
+                @{tag}
               </Text>
-            )}
+            </Flex>
+          )}
+
+          {/* ── 내용 */}
+          <Text textAlign="left" maxW="850px" whiteSpace="pre-line">
+            {comment.contents}
           </Text>
+
+          {/* ── 이미지 첨부 */}
           {comment.attachments && comment.attachments.length > 0 && (
             <SimpleGrid
-              columns={Math.min(comment.attachments.length, 4)}
+              columns={Math.min(comment.attachments.length, 3)}
               gap="8px"
               mt="10px"
             >
@@ -144,10 +138,10 @@ export const CommentFormation = ({
                   src={att.url}
                   alt={att.originalFileName}
                   w="100%"
-                  h="100px"
-                  objectFit="cover"
+                  objectFit="contain"
                   borderRadius="6px"
                   cursor="pointer"
+                  bg="gray.50"
                   onClick={() => handleImageClick(att.url)}
                   _hover={{ opacity: 0.85 }}
                 />
@@ -155,6 +149,7 @@ export const CommentFormation = ({
             </SimpleGrid>
           )}
 
+          {/* ── 좋아요 / 싫어요 / 답글 */}
           <Flex alignItems="center" mt="8px" gap="6px">
             <Button
               size="xs"
@@ -199,7 +194,7 @@ export const CommentFormation = ({
                 _hover={{ bgColor: hoverColor, color: "gray.7" }}
                 onClick={() => setIsWriteState(comment.commentId)}
               >
-                답글 작성
+                답글 달기
               </Button>
             )}
           </Flex>
@@ -258,17 +253,22 @@ const AuthorInfoMenuList = ({
   return (
     <Menu autoSelect={false}>
       <MenuButton cursor={!authorId ? "not-allowed" : "pointer"}>
-        <Box display="flex" alignItems="center" w="fit-content">
+        <Box display="flex" alignItems="center" gap="6px">
           <GradientAvatar
             src={profileImageUrl ?? undefined}
-            size="sm"
+            size="xs"
             name={profileImageUrl ? undefined : name}
             gradientStart={frameGradientStart}
             gradientEnd={frameGradientEnd}
             borderWidth={2}
             gapWidth={1}
+            glow={false}
           />
-          <Text px="10px" fontSize="lg" fontWeight="600" whiteSpace="nowrap">
+          <Text
+            fontSize={{ base: "md", md: "lg" }}
+            fontWeight="medium"
+            whiteSpace="nowrap"
+          >
             {name}
           </Text>
           <RoleBadge badgeType={badgeType} badgeLabel={badgeLabel} />

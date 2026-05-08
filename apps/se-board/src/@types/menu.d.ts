@@ -1,8 +1,12 @@
 import { MenuSettingRole } from "@types";
 
 declare module "@types" {
-  type Menu = MenuMenu & BoardMenu & ExternalMenu & CategoryMenu;
-  type MenuType = "MENU" | "BOARD" | "EXTERNAL" | "CATEGORY";
+  type Menu = MenuMenu &
+    BoardMenu &
+    ExternalMenu &
+    CategoryMenu &
+    RecruitMenu & { accessible?: boolean; manageable?: boolean };
+  type MenuType = "MENU" | "BOARD" | "EXTERNAL" | "CATEGORY" | "RECRUIT";
 
   interface MenuMenu {
     menuId: number;
@@ -33,6 +37,15 @@ declare module "@types" {
     name: string;
     urlId: string;
     subMenu: [];
+    popularPostEnabled?: boolean;
+  }
+
+  interface RecruitMenu {
+    menuId: number;
+    type: Pick<MenuType, "RECRUIT">;
+    name: string;
+    urlId: string;
+    subMenu: Menu[];
     popularPostEnabled?: boolean;
   }
 

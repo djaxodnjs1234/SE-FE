@@ -308,17 +308,6 @@ export const CategoryAndPrivacySetting = ({
               >
                 게시글 목록 상단 고정
               </Checkbox>
-              <Checkbox
-                display={isModified ? "none" : "inline-flex"}
-                size="md"
-                borderRadius="3px"
-                borderColor="gray.5"
-                color={color}
-                isChecked={isOldVersion}
-                onChange={onClickOldVersion}
-              >
-                기존 SE 등록
-              </Checkbox>
             </HStack>
           </ModalBody>
           <ModalFooter>
@@ -476,17 +465,6 @@ export const DesktopCategoryAndPrivacySetting = ({
             onChange={onClickPined} // 게시글 수정 시 체크되어 있을 수도 있어야 함
           >
             리스트 상단 고정
-          </Checkbox>
-          <Checkbox
-            display={isModified ? "none" : "inline-flex"}
-            size="md"
-            borderRadius="3px"
-            borderColor="gray.5"
-            color={color}
-            isChecked={isOldVersion}
-            onChange={onClickOldVersion}
-          >
-            기존 SE 등록
           </Checkbox>
         </VStack>
       </Box>

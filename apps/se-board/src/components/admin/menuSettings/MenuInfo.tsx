@@ -164,30 +164,61 @@ export const MenuInfo = ({
   }
 
   const settingMenu = useCallback(() => {
+    type AuthItem = {
+      label: string;
+      roleType: "expose" | "access" | "write" | "manage";
+      disabledList?: string[];
+    };
     switch (menuInfo?.type) {
       case "MENU":
         return {
           menuType: "GROUP",
           menuID: "메뉴 ID",
-          authority: ["메뉴 노출 대상"],
+          authority: [
+            { label: "메뉴 노출 대상", roleType: "expose" as const },
+          ] as AuthItem[],
         };
       case "BOARD":
         return {
           menuType: "BOARD",
           menuID: "메뉴 ID",
-          authority: ["메뉴 노출 대상", "게시판 접근 권한"],
+          authority: [
+            { label: "메뉴 노출 대상", roleType: "expose" as const },
+            { label: "게시판 접근 권한", roleType: "access" as const },
+          ] as AuthItem[],
         };
       case "EXTERNAL":
         return {
           menuType: "EXTERNAL",
           menuID: "메뉴 URL",
-          authority: ["메뉴 노출 대상"],
+          authority: [
+            { label: "메뉴 노출 대상", roleType: "expose" as const },
+          ] as AuthItem[],
+        };
+      case "RECRUIT":
+        return {
+          menuType: "RECRUIT",
+          menuID: "메뉴 ID",
+          authority: [
+            { label: "메뉴 노출 대상", roleType: "expose" as const },
+            { label: "게시판 접근 권한", roleType: "access" as const },
+            {
+              label: "게시판 작성 권한",
+              roleType: "write" as const,
+              disabledList: ["all"],
+            },
+            {
+              label: "게시판 관리 권한",
+              roleType: "manage" as const,
+              disabledList: ["all"],
+            },
+          ] as AuthItem[],
         };
       default:
         return {
           menuType: "",
           menuID: "메뉴 ID",
-          authority: [],
+          authority: [] as AuthItem[],
         };
     }
   }, [menuInfo]);
@@ -250,22 +281,17 @@ export const MenuInfo = ({
             </span>
           </Tooltip>
         </HStack>
-        {settingMenu().authority.map((authorityMenu, index) => (
-          <Flex key={index} alignItems="center" mt="0.5rem">
+        {settingMenu().authority.map((item) => (
+          <Flex key={item.roleType} alignItems="center" mt="0.5rem">
             <Heading fontSize="md" w={{ md: "8.25rem" }}>
-              {authorityMenu}
+              {item.label}
             </Heading>
             <AuthorityMenu
-              roleType={index === 0 ? "expose" : "access"}
+              roleType={item.roleType}
               setRoles={setRoles}
-              defaultOption={
-                index === 0
-                  ? menuInfo?.expose?.option
-                  : menuInfo?.access?.option
-              }
-              defaultRoles={
-                index === 0 ? menuInfo?.expose?.roles : menuInfo?.access?.roles
-              }
+              defaultOption={menuInfo?.[item.roleType]?.option}
+              defaultRoles={menuInfo?.[item.roleType]?.roles}
+              disabledList={item.disabledList}
             />
           </Flex>
         ))}
@@ -334,6 +360,11 @@ export const AddMenuInfo = ({
         return {
           menuID: "메뉴 URL",
           authority: ["메뉴 노출 대상"],
+        };
+      case "RECRUIT":
+        return {
+          menuID: "메뉴 ID",
+          authority: ["메뉴 노출 대상", "게시판 접근 권한"],
         };
       default:
         return {

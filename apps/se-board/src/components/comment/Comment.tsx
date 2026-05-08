@@ -16,6 +16,7 @@ export const Comment = ({ comment }: CommentProps) => {
 
   const color = useColorModeValue("gray.7", "whiteAlpha.800");
   const borderColor = useColorModeValue("gray.3", "whiteAlpha.400");
+  const replyBg = useColorModeValue("gray.50", "whiteAlpha.50");
 
   return (
     <Box
@@ -26,30 +27,44 @@ export const Comment = ({ comment }: CommentProps) => {
       color={color}
     >
       <CommentFormation comment={comment} setIsWriteState={setIsWriteState} />
-      {comment.subComments.map((subComment) => (
-        <Box
-          key={subComment.commentId}
-          id={`comment-${subComment.commentId}`}
-          w="100%"
-          pl={{
-            base: "36px",
-            md: "64px",
-          }}
-          borderTop={`1px solid`}
-          borderColor={borderColor}
-        >
-          <CommentFormation
-            comment={subComment}
-            setIsWriteState={setIsWriteState}
-            tag={comment.author.name}
-          />
-        </Box>
-      ))}
+      {comment.subComments.map((subComment) => {
+        // 태그된 댓글 ID로 실제 작성자 이름 찾기
+        const tagAuthorName =
+          subComment.tag === comment.commentId
+            ? comment.author.name
+            : comment.subComments.find((sc) => sc.commentId === subComment.tag)
+                ?.author.name ?? comment.author.name;
+
+        return (
+          <Box
+            key={subComment.commentId}
+            id={`comment-${subComment.commentId}`}
+            w="100%"
+            pl={{ base: "36px", md: "64px" }}
+            borderTop={`1px solid`}
+            borderColor={borderColor}
+            bg={replyBg}
+          >
+            <CommentFormation
+              comment={subComment}
+              setIsWriteState={setIsWriteState}
+              tag={tagAuthorName}
+            />
+          </Box>
+        );
+      })}
       {isWriteState !== null && (
         <Box borderTop={`1px solid`} borderColor={borderColor} py="0.5rem">
           <SubCommentInput
             superCommentId={comment.commentId}
             tagCommentId={isWriteState}
+            tagAuthorName={
+              isWriteState === comment.commentId
+                ? comment.author.name
+                : comment.subComments.find(
+                    (sc) => sc.commentId === isWriteState
+                  )?.author.name ?? comment.author.name
+            }
             inputRef={subCommentAreaRef}
             setIsWriteState={setIsWriteState}
           />

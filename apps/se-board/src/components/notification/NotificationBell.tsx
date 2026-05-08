@@ -32,6 +32,7 @@ import {
   markAllAsRead,
   markAsRead,
   NotificationItem,
+  NotificationType,
 } from "@/api/notification";
 import { useSse } from "@/hooks/useSse";
 
@@ -86,7 +87,19 @@ export const NotificationBell = ({ isLoggedIn }: Props) => {
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     }
-    if (noti.relatedId) navigate(`/posts/${noti.relatedId}`);
+    if (noti.relatedId) {
+      const recruitTypes: NotificationType[] = [
+        "RECRUIT_SKILL_MATCH",
+        "SEEK_SKILL_MATCH",
+        "NEW_RECRUIT_POST",
+        "NEW_SEEK_POST",
+      ];
+      if (recruitTypes.includes(noti.type)) {
+        navigate(`/recruit/${noti.relatedId}`);
+      } else {
+        navigate(`/posts/${noti.relatedId}`);
+      }
+    }
   };
 
   const handleMarkAllAsRead = async () => {
