@@ -65,7 +65,7 @@ export const Carousel = ({ banners }: { banners: BannerDTO[] }) => {
               h="full"
               borderRadius={10}
               key={i}
-              src={`${process.env.REACT_APP_API_FILE_ENDPOINT}/${banner.fileMetaData.url}`}
+              src={`${process.env.REACT_APP_API_FILE_ENDPOINT}${banner.fileMetaData.url}`}
             />
           </Box>
         ))}

@@ -46,7 +46,7 @@ export const BoardPreview = ({
         borderRadius="0.5rem"
         _hover={{ cursor: "pointer" }}
       >
-        <Heading fontSize={{ base: "1.5rem", md: "2rem" }} color={headingColor}>
+        <Heading fontSize={{ base: "1rem", md: "1.5rem" }} color={headingColor}>
           {menuName}
         </Heading>
       </Flex>

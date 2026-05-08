@@ -1,0 +1,190 @@
+/* CKEditor 5 content styles - for rendering editor content outside the editor */
+
+.ck-content code {
+  background-color: hsla(0, 0%, 78%, 0.3);
+  border-radius: 2px;
+  padding: 0.15em;
+}
+
+.ck-content blockquote {
+  border-left: 5px solid hsl(0, 0%, 80%);
+  font-style: italic;
+  margin-left: 0;
+  margin-right: 0;
+  overflow: hidden;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+.ck-content[dir="rtl"] blockquote {
+  border-left: 0;
+  border-right: 5px solid hsl(0, 0%, 80%);
+}
+
+.ck-content pre {
+  background: hsla(0, 0%, 78%, 0.3);
+  border: 1px solid #c4c4c4;
+  border-radius: 2px;
+  color: #353535;
+  direction: ltr;
+  font-style: normal;
+  min-width: 200px;
+  padding: 1em;
+  tab-size: 4;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.ck-content pre code {
+  background: unset;
+  border-radius: 0;
+  padding: 0;
+}
+
+.ck-content hr {
+  background: hsl(0, 0%, 87%);
+  border: 0;
+  height: 4px;
+  margin: 15px 0;
+}
+
+/* Font sizes */
+.ck-content .text-tiny  { font-size: 0.7em; }
+.ck-content .text-small { font-size: 0.85em; }
+.ck-content .text-big   { font-size: 1.4em; }
+.ck-content .text-huge  { font-size: 1.8em; }
+
+/* Images */
+.ck-content .image {
+  clear: both;
+  display: table;
+  margin: 0.9em auto;
+  min-width: 50px;
+  text-align: center;
+}
+
+.ck-content .image img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  min-width: 100%;
+}
+
+.ck-content .image-inline {
+  align-items: flex-start;
+  display: inline-flex;
+  max-width: 100%;
+}
+
+.ck-content .image-inline picture {
+  display: flex;
+}
+
+.ck-content .image-inline img,
+.ck-content .image-inline picture {
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: 100%;
+}
+
+.ck-content .image.image_resized {
+  box-sizing: border-box;
+  display: block;
+  max-width: 100%;
+}
+
+.ck-content .image.image_resized img {
+  width: 100%;
+}
+
+.ck-content .image.image_resized > figcaption {
+  display: block;
+}
+
+.ck-content .image > figcaption {
+  display: table-caption;
+  caption-side: bottom;
+  word-break: break-word;
+  color: hsl(0, 0%, 20%);
+  background-color: hsl(0, 0%, 97%);
+  padding: 0.6em;
+  font-size: 0.75em;
+  outline-offset: -1px;
+}
+
+/* Image styles */
+.ck-content .image-style-block-align-left,
+.ck-content .image-style-block-align-right { max-width: calc(100% - 1.5em); }
+.ck-content .image-style-align-left,
+.ck-content .image-style-align-right        { clear: none; }
+.ck-content .image-style-side               { float: right; margin-left: 1.5em; max-width: 50%; }
+.ck-content .image-style-align-left         { float: left;  margin-right: 1.5em; }
+.ck-content .image-style-align-center       { margin-left: auto; margin-right: auto; }
+.ck-content .image-style-align-right        { float: right; margin-left: 1.5em; }
+.ck-content .image-style-block-align-right  { margin-right: 0; margin-left: auto; }
+.ck-content .image-style-block-align-left   { margin-left: 0; margin-right: auto; }
+
+/* Lists */
+.ck-content ol                   { list-style-type: decimal; }
+.ck-content ol ol                { list-style-type: lower-latin; }
+.ck-content ol ol ol             { list-style-type: lower-roman; }
+.ck-content ol ol ol ol          { list-style-type: upper-latin; }
+.ck-content ol ol ol ol ol       { list-style-type: upper-roman; }
+.ck-content ul                   { list-style-type: disc; }
+.ck-content ul ul                { list-style-type: circle; }
+.ck-content ul ul ul,
+.ck-content ul ul ul ul          { list-style-type: square; }
+
+/* Table */
+.ck-content .table {
+  display: table;
+  margin: 0.9em auto;
+}
+
+.ck-content .table table {
+  border: 1px double hsl(0, 0%, 70%);
+  border-collapse: collapse;
+  border-spacing: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.ck-content .table table td,
+.ck-content .table table th {
+  border: 1px solid hsl(0, 0%, 75%);
+  min-width: 2em;
+  padding: 0.4em;
+}
+
+.ck-content .table table th {
+  background: hsla(0, 0%, 0%, 5%);
+  font-weight: bold;
+}
+
+.ck-content[dir="ltr"] .table th { text-align: left; }
+.ck-content[dir="rtl"] .table th { text-align: right; }
+
+.ck-content .table > figcaption {
+  display: table-caption;
+  caption-side: top;
+  word-break: break-word;
+  text-align: center;
+  color: hsl(0, 0%, 20%);
+  background-color: hsl(0, 0%, 97%);
+  padding: 0.6em;
+  font-size: 0.75em;
+  outline-offset: -1px;
+}
+
+.ck-content .table .ck-table-resized { table-layout: fixed; }
+.ck-content .table table             { overflow: hidden; }
+.ck-content .table td,
+.ck-content .table th                { position: relative; }
+
+/* Media embed */
+.ck-content .media {
+  clear: both;
+  display: block;
+  margin: 0.9em 0;
+  min-width: 15em;
+}

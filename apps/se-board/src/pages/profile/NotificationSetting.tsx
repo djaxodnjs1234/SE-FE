@@ -28,6 +28,10 @@ const TYPE_LABELS: Partial<Record<NotificationType, string>> = {
   REPLY: "내 댓글에 대댓글",
   POST_LIKE: "내 게시글 좋아요",
   FRAME_ACQUIRED: "프레임 획득",
+  RECRUIT_SKILL_MATCH: "내 기술 스택과 맞는 구인 글",
+  SEEK_SKILL_MATCH: "내 구인 글과 기술이 맞는 구직자",
+  NEW_RECRUIT_POST: "새 구인 글 등록",
+  NEW_SEEK_POST: "새 구직 글 등록",
 };
 
 export const NotificationSettingPage = () => {

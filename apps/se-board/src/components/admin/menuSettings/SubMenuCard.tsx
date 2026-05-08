@@ -32,6 +32,7 @@ const menuTypeList: MenuTypeList = {
   BOARD: "게시판 메뉴",
   EXTERNAL: "외부 링크",
   CATEGORY: "카테고리",
+  RECRUIT: "구인구직 메뉴",
   ADD: "추가",
   NULL: "기타",
 };

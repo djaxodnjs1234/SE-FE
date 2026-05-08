@@ -5,4 +5,8 @@ export const queryKeys = {
   profile: "profile",
   admin: "admin",
   memberList: "memberList",
+  recruit: "recruit",
+  recruitComments: "recruitComments",
+  skills: "skills",
+  developerProfile: "developerProfile",
 };

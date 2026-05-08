@@ -359,6 +359,7 @@ const DesktopNavItem = ({ type, name, externalUrl, urlId, subMenu }: Menu) => {
         </WrapItem>
       );
     case "BOARD":
+    case "RECRUIT":
       return (
         <WrapItem flexShrink={0} m="0px" fontSize="1.125rem" fontWeight="bold">
           <NavLink to={urlId}>

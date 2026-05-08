@@ -4,6 +4,8 @@ import {
   Button,
   Collapse,
   Flex,
+  Grid,
+  GridItem,
   Icon,
   IconButton,
   Skeleton,
@@ -14,8 +16,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { MemberFrameInfo } from "@types";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { IconType } from "react-icons";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BsBell,
   BsBookmark,
@@ -47,6 +48,8 @@ import {
 import { userState } from "@/store/user";
 
 import { PageNotFound } from "../PageNotFound";
+import { DeveloperProfileInfoSection } from "./DeveloperProfileSection";
+import { DeveloperReadmeSection } from "./DeveloperReadmeSection";
 
 export const ProfilePage = () => {
   const [isFrameVaultOpen, setIsFrameVaultOpen] = useState(false);
@@ -71,7 +74,6 @@ export const ProfilePage = () => {
   const isMyProfile =
     userInfo.email === userId || userInfo.userId === Number(userId);
 
-  // 내 프로필 조회 시 equippedFrame을 userState에 동기화
   useEffect(() => {
     if (isMyProfile && data) {
       setUserState((prev) => ({
@@ -105,13 +107,6 @@ export const ProfilePage = () => {
     });
   };
 
-  const bgColor = useColorModeValue("gray.0", "#1A202C");
-  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
-  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
-  const subColor = useColorModeValue("gray.7", "whiteAlpha.800");
-  const borderColor = useColorModeValue("gray.2", "whiteAlpha.400");
-  const hoverBgColor = useColorModeValue("gray.50", "whiteAlpha.50");
-
   const onClickKumohCertification = () => {
     if (userInfo.roles.includes("금오인")) {
       toast({
@@ -125,285 +120,308 @@ export const ProfilePage = () => {
     }
   };
 
+  const bgColor = useColorModeValue("gray.0", "#1A202C");
+  const cardBgColor = useColorModeValue("white", "whiteAlpha.50");
+  const titleColor = useColorModeValue("gray.7", "whiteAlpha.800");
+  const borderColor = useColorModeValue("gray.2", "whiteAlpha.400");
+  const hoverBgColor = useColorModeValue("gray.50", "whiteAlpha.50");
+
   if (isError) return <PageNotFound />;
 
   return (
-    <>
-      <Flex
-        justifyContent="center"
-        position="relative"
-        zIndex={0}
+    <Flex
+      justifyContent="center"
+      position="relative"
+      zIndex={0}
+      w="full"
+      minH={{ base: "100vh", md: "calc(100vh - 59px)" }}
+      bg={bgColor}
+    >
+      <Box
+        maxW="1180px"
         w="full"
-        minH={{ base: "100vh", md: "calc(100vh - 59px)" }}
-        bg={bgColor}
+        pt={{ base: "calc(56px + 1rem)", md: "1.5rem" }}
+        px={{ base: "1rem", md: "1rem" }}
+        pb="2rem"
       >
-        <Flex
-          direction="column"
-          maxW="container.sm"
-          w="full"
-          pt={{ base: "calc(56px + 1rem)", md: "1rem" }}
-          px={{ base: 0, md: "1rem" }}
-        >
-          {isLoading ? (
-            <Flex w="full" direction="column">
-              <Skeleton height="6rem" w="full" />
-              <Stack mt="1rem" w="full">
-                <Skeleton height="4rem" w="full" />
-                <Skeleton height="4rem" w="full" />
-                <Skeleton height="4rem" w="full" />
-                <Skeleton height="4rem" w="full" />
-                <Skeleton height="4rem" w="full" />
-                <Skeleton height="4rem" w="full" />
-              </Stack>
-            </Flex>
-          ) : (
-            <>
-              <Flex
-                w="full"
-                bg={cardBgColor}
-                py="1rem"
-                px="1rem"
-                border="1px"
-                borderColor={borderColor}
-                borderRadius={3}
-              >
-                <Flex gap="1rem" alignItems="center">
-                  <Box position="relative" display="inline-block">
-                    <GradientAvatar
-                      size="lg"
-                      src={data?.profileImageUrl ?? undefined}
-                      gradientStart={data?.equippedFrame?.gradientStart}
-                      gradientEnd={data?.equippedFrame?.gradientEnd}
-                      borderWidth={4}
-                      gapWidth={2}
-                      cursor={isMyProfile ? "pointer" : "default"}
-                      onClick={() =>
-                        isMyProfile && fileInputRef.current?.click()
-                      }
-                      opacity={isUploading ? 0.6 : 1}
-                    />
-                    {isMyProfile && (
-                      <>
-                        <Tooltip label="사진 변경" hasArrow>
-                          <IconButton
-                            aria-label="프로필 이미지 변경"
-                            icon={<Icon as={BsCameraFill} boxSize="12px" />}
-                            size="xs"
-                            borderRadius="full"
-                            position="absolute"
-                            bottom="0"
-                            right="0"
-                            bgColor="gray.500"
-                            color="white"
-                            _hover={{ bgColor: "gray.600" }}
-                            onClick={() => fileInputRef.current?.click()}
-                            isLoading={isUploading}
-                          />
-                        </Tooltip>
-                        {data?.profileImageUrl && (
-                          <Tooltip label="사진 삭제" hasArrow>
+        {isLoading ? (
+          <Grid templateColumns={{ base: "1fr", md: "320px 1fr" }} gap={4}>
+            <Stack>
+              <Skeleton h="120px" borderRadius="md" />
+              <Skeleton h="200px" borderRadius="md" />
+            </Stack>
+            <Stack>
+              <Skeleton h="300px" borderRadius="md" />
+            </Stack>
+          </Grid>
+        ) : (
+          <Grid
+            templateColumns={{ base: "1fr", md: "320px 1fr" }}
+            gap={4}
+            alignItems="start"
+          >
+            {/* 좌측 사이드바 */}
+            <GridItem>
+              <Stack spacing={3}>
+                {/* 아바타 + 기본 정보 */}
+                <Box
+                  bg={cardBgColor}
+                  border="1px"
+                  borderColor={borderColor}
+                  borderRadius="md"
+                  p={4}
+                >
+                  <Flex direction="column" alignItems="center" gap={3}>
+                    <Box position="relative" display="inline-block">
+                      <GradientAvatar
+                        size="xl"
+                        src={data?.profileImageUrl ?? undefined}
+                        gradientStart={data?.equippedFrame?.gradientStart}
+                        gradientEnd={data?.equippedFrame?.gradientEnd}
+                        borderWidth={4}
+                        gapWidth={2}
+                        cursor={isMyProfile ? "pointer" : "default"}
+                        onClick={() =>
+                          isMyProfile && fileInputRef.current?.click()
+                        }
+                        opacity={isUploading ? 0.6 : 1}
+                      />
+                      {isMyProfile && (
+                        <>
+                          <Tooltip label="사진 변경" hasArrow>
                             <IconButton
-                              aria-label="프로필 이미지 삭제"
-                              icon={<Icon as={BsTrash} boxSize="10px" />}
+                              aria-label="프로필 이미지 변경"
+                              icon={<Icon as={BsCameraFill} boxSize="12px" />}
                               size="xs"
                               borderRadius="full"
                               position="absolute"
-                              top="0"
+                              bottom="0"
                               right="0"
-                              bgColor="red.400"
+                              bgColor="gray.500"
                               color="white"
-                              _hover={{ bgColor: "red.500" }}
-                              onClick={handleDeleteImage}
-                              isLoading={isDeleting}
+                              _hover={{ bgColor: "gray.600" }}
+                              onClick={() => fileInputRef.current?.click()}
+                              isLoading={isUploading}
                             />
                           </Tooltip>
-                        )}
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          style={{ display: "none" }}
-                          onChange={handleFileChange}
-                        />
-                      </>
-                    )}
-                  </Box>
-                  <Flex direction="column">
-                    <Flex alignItems="center" gap="0.5rem" flexWrap="wrap">
-                      <Text
-                        fontSize={{ base: "1.25rem", sm: "1.5rem" }}
-                        fontWeight="bold"
-                        color={titleColor}
-                      >
-                        {data?.nickname}
-                      </Text>
-                      <RoleBadge
-                        badgeType={data?.badgeType}
-                        badgeLabel={data?.badgeLabel}
-                        size="md"
-                      />
-                      {isMyProfile && (
-                        <Icon
-                          onClick={() => navigate("/profile/edit")}
-                          as={BsPencil}
-                          boxSize={{ base: "0.875rem", sm: "1rem" }}
-                          _hover={{ cursor: "pointer" }}
-                        />
+                          {data?.profileImageUrl && (
+                            <Tooltip label="사진 삭제" hasArrow>
+                              <IconButton
+                                aria-label="프로필 이미지 삭제"
+                                icon={<Icon as={BsTrash} boxSize="10px" />}
+                                size="xs"
+                                borderRadius="full"
+                                position="absolute"
+                                top="0"
+                                right="0"
+                                bgColor="red.400"
+                                color="white"
+                                _hover={{ bgColor: "red.500" }}
+                                onClick={handleDeleteImage}
+                                isLoading={isDeleting}
+                              />
+                            </Tooltip>
+                          )}
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            style={{ display: "none" }}
+                            onChange={handleFileChange}
+                          />
+                        </>
                       )}
+                    </Box>
+
+                    <Box textAlign="center">
+                      <Flex
+                        alignItems="center"
+                        justifyContent="center"
+                        gap="0.5rem"
+                        flexWrap="wrap"
+                      >
+                        {isMyProfile && (
+                          <Icon
+                            onClick={() => navigate("/profile/edit")}
+                            as={BsPencil}
+                            boxSize="0.875rem"
+                            _hover={{ cursor: "pointer" }}
+                            color={titleColor}
+                          />
+                        )}
+                        <Text
+                          fontSize="1.125rem"
+                          fontWeight="bold"
+                          color={titleColor}
+                        >
+                          {data?.nickname}
+                        </Text>
+                        <RoleBadge
+                          badgeType={data?.badgeType}
+                          badgeLabel={data?.badgeLabel}
+                          size="sm"
+                        />
+                      </Flex>
+                      {data?.activityScore != null && (
+                        <Text color="gray.5" fontSize="xs" mt={1}>
+                          활동 점수: {data.activityScore}
+                        </Text>
+                      )}
+                    </Box>
+
+                    {/* 통계 */}
+                    <Flex gap={4} w="full" justifyContent="center">
+                      <Flex direction="column" alignItems="center">
+                        <Text fontWeight="bold" fontSize="sm">
+                          {data?.postCount || 0}
+                        </Text>
+                        <Text fontSize="xs" color="gray.5">
+                          게시글
+                        </Text>
+                      </Flex>
+                      <Flex direction="column" alignItems="center">
+                        <Text fontWeight="bold" fontSize="sm">
+                          {data?.commentCount || 0}
+                        </Text>
+                        <Text fontSize="xs" color="gray.5">
+                          댓글
+                        </Text>
+                      </Flex>
                     </Flex>
-                    {data?.activityScore != null && (
-                      <Text color={subColor} fontSize="xs">
-                        활동 점수: {data.activityScore}
-                      </Text>
-                    )}
                   </Flex>
-                </Flex>
-              </Flex>
-              <Flex
-                direction="column"
-                mt="1rem"
-                bg={cardBgColor}
-                border="1px"
-                borderColor={borderColor}
-                borderRadius={3}
-                _hover={{ cursor: "pointer" }}
-              >
-                {/* 작성한 글 */}
-                <Flex
-                  onClick={() => navigate("posts")}
-                  alignItems="center"
-                  w="full"
-                  py="1rem"
-                  px="1rem"
-                  color={titleColor}
+                </Box>
+
+                {/* 개발자 프로필 */}
+                <DeveloperProfileInfoSection
+                  profile={data?.developerProfile ?? null}
+                  isMyProfile={isMyProfile}
+                />
+              </Stack>
+            </GridItem>
+
+            {/* 우측 메인 영역 */}
+            <GridItem minW={0}>
+              <Stack spacing={3}>
+                {/* README */}
+                <DeveloperReadmeSection
+                  profile={data?.developerProfile ?? null}
+                  isMyProfile={isMyProfile}
+                />
+
+                {/* 활동 메뉴 */}
+                <Box
+                  bg={cardBgColor}
+                  border="1px"
+                  borderColor={borderColor}
+                  borderRadius="md"
                 >
-                  <Icon
-                    as={BsFileText}
-                    boxSize={{ base: "1rem", sm: "1.25rem" }}
-                    mr="1rem"
-                  />
-                  <Text
-                    fontSize={{ base: "1rem", sm: "1.25rem" }}
-                    fontWeight="bold"
+                  <Flex
+                    onClick={() => navigate("posts")}
+                    alignItems="center"
+                    w="full"
+                    py="0.875rem"
+                    px="1rem"
+                    color={titleColor}
+                    _hover={{ bg: hoverBgColor, cursor: "pointer" }}
+                    borderRadius="md"
                   >
-                    작성한 글
-                  </Text>
-                  <Text
-                    fontSize={{ base: "1rem", sm: "1.25rem" }}
-                    fontWeight="bold"
-                    color="primary"
-                    ml="1rem"
-                  >
-                    {data?.postCount || 0}
-                  </Text>
-                  <Icon
-                    as={BsChevronRight}
-                    boxSize={{ base: "1rem", sm: "1.25rem" }}
-                    ml="auto"
-                  />
-                </Flex>
-                {/* 작성한 댓글 */}
-                <Flex
-                  onClick={() => navigate("comments")}
-                  alignItems="center"
-                  w="full"
-                  py="1rem"
-                  px="1rem"
-                  color={titleColor}
-                >
-                  <Icon
-                    as={BsChatLeftText}
-                    boxSize={{ base: "1rem", sm: "1.25rem" }}
-                    mr="1rem"
-                  />
-                  <Text
-                    fontSize={{ base: "1rem", sm: "1.25rem" }}
-                    fontWeight="bold"
-                  >
-                    작성한 댓글
-                  </Text>
-                  <Text
-                    fontSize={{ base: "1rem", sm: "1.25rem" }}
-                    fontWeight="bold"
-                    color="primary"
-                    ml="1rem"
-                  >
-                    {data?.commentCount || 0}
-                  </Text>
-                  <Icon
-                    as={BsChevronRight}
-                    boxSize={{ base: "1rem", sm: "1.25rem" }}
-                    ml="auto"
-                  />
-                </Flex>
-                {userInfo.userId === Number(userId) && (
-                  <>
-                    {/* 북마크 */}
-                    <Flex
-                      onClick={() => navigate("/profile/bookmark")}
-                      alignItems="center"
-                      w="full"
-                      py="1rem"
-                      px="1rem"
-                      color={titleColor}
+                    <Icon as={BsFileText} boxSize="1rem" mr="0.75rem" />
+                    <Text fontSize="sm" fontWeight="semibold">
+                      작성한 글
+                    </Text>
+                    <Text
+                      fontSize="sm"
+                      fontWeight="bold"
+                      color="primary"
+                      ml="0.5rem"
                     >
-                      <Icon
-                        as={BsBookmark}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        mr="1rem"
-                      />
-                      <Text
-                        fontSize={{ base: "1rem", sm: "1.25rem" }}
-                        fontWeight="bold"
+                      {data?.postCount || 0}
+                    </Text>
+                    <Icon as={BsChevronRight} boxSize="1rem" ml="auto" />
+                  </Flex>
+
+                  <Flex
+                    onClick={() => navigate("comments")}
+                    alignItems="center"
+                    w="full"
+                    py="0.875rem"
+                    px="1rem"
+                    color={titleColor}
+                    _hover={{ bg: hoverBgColor, cursor: "pointer" }}
+                  >
+                    <Icon as={BsChatLeftText} boxSize="1rem" mr="0.75rem" />
+                    <Text fontSize="sm" fontWeight="semibold">
+                      작성한 댓글
+                    </Text>
+                    <Text
+                      fontSize="sm"
+                      fontWeight="bold"
+                      color="primary"
+                      ml="0.5rem"
+                    >
+                      {data?.commentCount || 0}
+                    </Text>
+                    <Icon as={BsChevronRight} boxSize="1rem" ml="auto" />
+                  </Flex>
+
+                  {isMyProfile && (
+                    <>
+                      <Flex
+                        onClick={() => navigate("/profile/bookmark")}
+                        alignItems="center"
+                        w="full"
+                        py="0.875rem"
+                        px="1rem"
+                        color={titleColor}
+                        _hover={{ bg: hoverBgColor, cursor: "pointer" }}
                       >
-                        북마크
-                      </Text>
-                      <Text
-                        fontSize={{ base: "1rem", sm: "1.25rem" }}
-                        fontWeight="bold"
-                        color="primary"
-                        ml="1rem"
-                      >
-                        {data?.bookmarkCount || 0}
-                      </Text>
-                      <Icon
-                        as={BsChevronRight}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        ml="auto"
-                      />
-                    </Flex>
+                        <Icon as={BsBookmark} boxSize="1rem" mr="0.75rem" />
+                        <Text fontSize="sm" fontWeight="semibold">
+                          북마크
+                        </Text>
+                        <Text
+                          fontSize="sm"
+                          fontWeight="bold"
+                          color="primary"
+                          ml="0.5rem"
+                        >
+                          {data?.bookmarkCount || 0}
+                        </Text>
+                        <Icon as={BsChevronRight} boxSize="1rem" ml="auto" />
+                      </Flex>
+                    </>
+                  )}
+                </Box>
+
+                {/* 내 프로필 설정 (본인만) */}
+                {isMyProfile && (
+                  <Box
+                    bg={cardBgColor}
+                    border="1px"
+                    borderColor={borderColor}
+                    borderRadius="md"
+                  >
                     {/* 프레임 보관함 */}
-                    <Box
-                      w="full"
-                      color={titleColor}
-                      borderTop="1px"
-                      borderColor={borderColor}
-                    >
+                    <Box w="full" color={titleColor}>
                       <Flex
                         alignItems="center"
                         w="full"
-                        py="1rem"
+                        py="0.875rem"
                         px="1rem"
                         cursor="pointer"
                         onClick={() => setIsFrameVaultOpen((v) => !v)}
                         _hover={{ bg: hoverBgColor }}
+                        borderRadius={isFrameVaultOpen ? "md md 0 0" : "md"}
                       >
-                        <Icon
-                          as={BsGem}
-                          boxSize={{ base: "1rem", sm: "1.25rem" }}
-                          mr="1rem"
-                        />
-                        <Text
-                          fontSize={{ base: "1rem", sm: "1.25rem" }}
-                          fontWeight="bold"
-                        >
+                        <Icon as={BsGem} boxSize="1rem" mr="0.75rem" />
+                        <Text fontSize="sm" fontWeight="semibold">
                           프레임 보관함
                         </Text>
                         {data?.equippedFrame && !isFrameVaultOpen && (
                           <Box
                             ml="0.5rem"
-                            w="16px"
-                            h="16px"
+                            w="14px"
+                            h="14px"
                             borderRadius="full"
                             background={`linear-gradient(135deg, ${data.equippedFrame.gradientStart}, ${data.equippedFrame.gradientEnd})`}
                             flexShrink={0}
@@ -411,12 +429,12 @@ export const ProfilePage = () => {
                         )}
                         <Icon
                           as={isFrameVaultOpen ? BsChevronUp : BsChevronDown}
-                          boxSize={{ base: "1rem", sm: "1.25rem" }}
+                          boxSize="1rem"
                           ml="auto"
                         />
                       </Flex>
                       <Collapse in={isFrameVaultOpen} animateOpacity>
-                        <Box px="1rem" pt={"1rem"} pb="1rem">
+                        <Box px="1rem" pb="1rem" pt={"1rem"}>
                           {myFrames && myFrames.length > 0 ? (
                             <Flex gap="0.75rem" flexWrap="wrap">
                               {myFrames.map((mf) => (
@@ -439,145 +457,84 @@ export const ProfilePage = () => {
                               ))}
                             </Flex>
                           ) : (
-                            <Text fontSize="sm" color="gray.5">
-                              아직 획득한 프레임이 없어요. 활동 점수를 쌓아
-                              티어를 올리면 프레임을 획득할 수 있어요!
+                            <Text fontSize="xs" color="gray.5">
+                              아직 획득한 프레임이 없어요.
                             </Text>
                           )}
                         </Box>
                       </Collapse>
                     </Box>
+
                     {/* 알림 설정 */}
                     <Flex
                       onClick={() => navigate("/profile/notification/setting")}
                       alignItems="center"
                       w="full"
-                      py="1rem"
+                      py="0.875rem"
                       px="1rem"
                       color={titleColor}
+                      _hover={{ bg: hoverBgColor, cursor: "pointer" }}
                     >
-                      <Icon
-                        as={BsBell}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        mr="1rem"
-                      />
-                      <Text
-                        fontSize={{ base: "1rem", sm: "1.25rem" }}
-                        fontWeight="bold"
-                      >
+                      <Icon as={BsBell} boxSize="1rem" mr="0.75rem" />
+                      <Text fontSize="sm" fontWeight="semibold">
                         알림 설정
                       </Text>
-                      <Icon
-                        as={BsChevronRight}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        ml="auto"
-                      />
+                      <Icon as={BsChevronRight} boxSize="1rem" ml="auto" />
                     </Flex>
+
                     {/* 비밀번호 변경 */}
                     <Flex
                       onClick={() => navigate("/profile/password/edit")}
                       alignItems="center"
                       w="full"
-                      py="1rem"
+                      py="0.875rem"
                       px="1rem"
                       color={titleColor}
+                      _hover={{ bg: hoverBgColor, cursor: "pointer" }}
                     >
-                      <Icon
-                        as={BsKey}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        mr="1rem"
-                      />
-                      <Text
-                        fontSize={{ base: "1rem", sm: "1.25rem" }}
-                        fontWeight="bold"
-                      >
+                      <Icon as={BsKey} boxSize="1rem" mr="0.75rem" />
+                      <Text fontSize="sm" fontWeight="semibold">
                         비밀번호 변경
                       </Text>
-                      <Icon
-                        as={BsChevronRight}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        ml="auto"
-                      />
+                      <Icon as={BsChevronRight} boxSize="1rem" ml="auto" />
                     </Flex>
+
                     {/* 금오인 인증 */}
                     <Flex
                       onClick={onClickKumohCertification}
                       alignItems="center"
                       w="full"
-                      py="1rem"
+                      py="0.875rem"
                       px="1rem"
                       color={titleColor}
+                      _hover={{ bg: hoverBgColor, cursor: "pointer" }}
                     >
-                      <Icon
-                        as={BsCheckLg}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        mr="1rem"
-                      />
-                      <Text
-                        fontSize={{ base: "1rem", sm: "1.25rem" }}
-                        fontWeight="bold"
-                      >
+                      <Icon as={BsCheckLg} boxSize="1rem" mr="0.75rem" />
+                      <Text fontSize="sm" fontWeight="semibold">
                         금오인 인증
                       </Text>
-                      <Icon
-                        as={BsChevronRight}
-                        boxSize={{ base: "1rem", sm: "1.25rem" }}
-                        ml="auto"
-                      />
+                      <Icon as={BsChevronRight} boxSize="1rem" ml="auto" />
                     </Flex>
-                  </>
+                  </Box>
                 )}
-              </Flex>
-              {isMyProfile && (
-                <Button
-                  onClick={() => navigate("/profile/withdrawal")}
-                  variant="link"
-                  w="max"
-                  p="1rem"
-                  fontSize="14px"
-                  fontWeight="normal"
-                >
-                  회원탈퇴
-                </Button>
-              )}
-            </>
-          )}
-        </Flex>
-      </Flex>
-    </>
-  );
-};
 
-const Menu = ({
-  icon,
-  title,
-  onClick,
-  rightElement,
-}: {
-  icon: IconType;
-  title: string;
-  onClick: () => void;
-  rightElement?: ReactNode;
-}) => {
-  return (
-    <Flex
-      onClick={onClick}
-      alignItems="center"
-      w="full"
-      py="1rem"
-      px="1rem"
-      color="gray.7"
-    >
-      <Icon as={icon} boxSize={{ base: "1rem", sm: "1.25rem" }} mr="1rem" />
-      <Text fontSize={{ base: "1rem", sm: "1.25rem" }} fontWeight="bold">
-        {title}
-      </Text>
-      {rightElement}
-      <Icon
-        as={BsChevronRight}
-        boxSize={{ base: "1rem", sm: "1.25rem" }}
-        ml="auto"
-      />
+                {isMyProfile && (
+                  <Button
+                    onClick={() => navigate("/profile/withdrawal")}
+                    variant="link"
+                    w="max"
+                    fontSize="13px"
+                    fontWeight="normal"
+                    color="gray.5"
+                  >
+                    회원탈퇴
+                  </Button>
+                )}
+              </Stack>
+            </GridItem>
+          </Grid>
+        )}
+      </Box>
     </Flex>
   );
 };

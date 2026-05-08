@@ -1,15 +1,23 @@
 import { Flex, GridItem, SimpleGrid, Skeleton, Stack } from "@chakra-ui/react";
+import { useRecoilValue } from "recoil";
 
 import { convertPostListItemDTOToPostListItem } from "@/api/post";
 import { useMainPageMenu } from "@/react-query/hooks/useMainPage";
 import { useFetchBanners } from "@/react-query/hooks/useMenu";
+import { menuListState } from "@/store/menu";
 
 import { BoardPreview, BoardPreviewSkeleton } from "./BoardPreview";
 import { Carousel } from "./Carousel";
+import { RecruitPreview } from "./RecruitPreview";
 
 export const MainPage = () => {
   const { data, isLoading } = useMainPageMenu();
   const { data: bannerResponse, isLoading: bannerLoading } = useFetchBanners();
+  const menuList = useRecoilValue(menuListState);
+
+  const recruitMenuAccessible = menuList.some(
+    (menu) => menu.type === "RECRUIT" && menu.accessible !== false
+  );
   return (
     <Stack
       alignItems="center"
@@ -67,6 +75,13 @@ export const MainPage = () => {
               />
             </GridItem>
           ))}
+          {recruitMenuAccessible && (
+            <GridItem
+              colSpan={{ base: 1, md: data && data.length % 2 === 0 ? 2 : 1 }}
+            >
+              <RecruitPreview />
+            </GridItem>
+          )}
         </SimpleGrid>
       </Flex>
     </Stack>

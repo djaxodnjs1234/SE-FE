@@ -16,6 +16,7 @@ export const Content = ({ contents }: { contents: string }) => {
       borderColor={borderColor}
     >
       <Box
+        className="ck-content"
         m="16px"
         dangerouslySetInnerHTML={{
           __html: DOMPurify.sanitize(coloredContents, {
