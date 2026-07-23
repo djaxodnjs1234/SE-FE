@@ -27,7 +27,6 @@ import {
   DepartmentBoardResult,
   DepartmentBoardSource,
   downloadDepartmentBoard,
-  downloadDepartmentBoardArchive,
   previewDepartmentBoard,
 } from "@/api/departmentBoard";
 import { PageHeaderTitle } from "@/components/admin";
@@ -99,12 +98,23 @@ const saveBlob = (blob: Blob, fileName: string) => {
   window.URL.revokeObjectURL(url);
 };
 
+const getDownloadFileName = (contentDisposition: unknown) => {
+  const value = Array.isArray(contentDisposition)
+    ? String(contentDisposition[0])
+    : contentDisposition
+    ? String(contentDisposition)
+    : "";
+  const match = value.match(/filename="?([^"]+)"?/);
+
+  return match?.[1] ? decodeURIComponent(match[1]) : "";
+};
+
 export const DepartmentBoardDownloadPage = () => {
   const toast = useToast();
   const [source, setSource] = useState<DepartmentBoardSource>("NOTICE");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [includeAttachments, setIncludeAttachments] = useState(true);
+  const includeAttachments = false;
   const [validationMessage, setValidationMessage] = useState("");
   const [result, setResult] = useState<DepartmentBoardResult>();
   const [resultTitle, setResultTitle] = useState("");
@@ -112,6 +122,7 @@ export const DepartmentBoardDownloadPage = () => {
     "preview" | "download" | null
   >(null);
   const failures = result?.failures ?? [];
+  const successes = result?.successes ?? [];
 
   const requestBody: DepartmentBoardRequest = {
     source,
@@ -129,24 +140,20 @@ export const DepartmentBoardDownloadPage = () => {
     setLoadingAction(action);
 
     try {
-      const response =
-        action === "preview"
-          ? await previewDepartmentBoard(requestBody)
-          : await downloadDepartmentBoard(requestBody);
+      const response = await previewDepartmentBoard(requestBody);
 
       setResult(response.data);
       setResultTitle(action === "preview" ? "미리보기 결과" : "다운로드 결과");
 
-      if (action === "download" && response.data.downloadFileUrl) {
-        const archiveResponse = await downloadDepartmentBoardArchive(
-          response.data.downloadFileUrl
-        );
-
-        saveBlob(
-          archiveResponse.data,
+      if (action === "download") {
+        const archiveResponse = await downloadDepartmentBoard(requestBody);
+        const downloadFileName =
+          getDownloadFileName(archiveResponse.headers["content-disposition"]) ||
           response.data.downloadFileName ||
-            `department-board-${response.data.jobId}.zip`
-        );
+          `department-board-${source.toLowerCase()}-${Date.now()}.zip`;
+
+        saveBlob(archiveResponse.data, downloadFileName);
+        setResult({ ...response.data, downloadFileName });
       }
 
       toast({
@@ -215,11 +222,7 @@ export const DepartmentBoardDownloadPage = () => {
           </FormControl>
         </SimpleGrid>
 
-        <Checkbox
-          mt="1rem"
-          isChecked={includeAttachments}
-          onChange={(e) => setIncludeAttachments(e.target.checked)}
-        >
+        <Checkbox mt="1rem" isChecked={includeAttachments} isDisabled>
           첨부파일 포함
         </Checkbox>
 
@@ -274,7 +277,7 @@ export const DepartmentBoardDownloadPage = () => {
               </Tr>
               <Tr>
                 <Th>저장 경로</Th>
-                <Td>{result.downloadRoot || "-"}</Td>
+                <Td>{result.downloadFileName || "-"}</Td>
               </Tr>
               <Tr>
                 <Th>전체 게시글 수</Th>
@@ -313,6 +316,30 @@ export const DepartmentBoardDownloadPage = () => {
             </Table>
           ) : (
             <Text color="gray.6">실패한 게시글이 없습니다.</Text>
+          )}
+
+          <Text fontWeight="bold" mt="1rem" mb="0.5rem">
+            성공한 게시글 제목 목록
+          </Text>
+          {successes.length ? (
+            <Table size="sm" variant="simple">
+              <Thead>
+                <Tr>
+                  <Th>게시글 번호</Th>
+                  <Th>제목</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {successes.map((success, index) => (
+                  <Tr key={`${success.articleNo}-${index}`}>
+                    <Td>{success.articleNo ?? "-"}</Td>
+                    <Td>{success.title || "-"}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          ) : (
+            <Text color="gray.6">성공한 게시글이 없습니다.</Text>
           )}
         </Box>
       )}

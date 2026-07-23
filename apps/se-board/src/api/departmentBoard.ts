@@ -17,15 +17,19 @@ export interface DepartmentBoardFailure {
   message?: string;
 }
 
+export interface DepartmentBoardSuccess {
+  articleNo?: number | string;
+  title?: string;
+}
+
 export interface DepartmentBoardResult {
   jobId: string;
   status: string;
-  downloadRoot?: string;
   downloadFileName?: string;
-  downloadFileUrl?: string;
   totalCount: number;
   successCount: number;
   failCount: number;
+  successes: DepartmentBoardSuccess[];
   failures: DepartmentBoardFailure[];
 }
 
@@ -40,21 +44,12 @@ export const previewDepartmentBoard = (data: DepartmentBoardRequest) => {
 };
 
 export const downloadDepartmentBoard = (data: DepartmentBoardRequest) => {
-  return _axios<DepartmentBoardResult>({
+  return _axios<Blob>({
     url: "/admin/department-board-api-download/download",
     method: HTTP_METHODS.POST,
     headers: { ...getJWTHeader() },
-    timeout: 120000,
-    data,
-  });
-};
-
-export const downloadDepartmentBoardArchive = (url: string) => {
-  return _axios<Blob>({
-    url,
-    method: HTTP_METHODS.GET,
-    headers: { ...getJWTHeader() },
     responseType: "blob",
     timeout: 120000,
+    data,
   });
 };
