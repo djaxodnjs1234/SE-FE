@@ -8,6 +8,7 @@ import {
   FormLabel,
   HStack,
   Input,
+  Link,
   Select,
   SimpleGrid,
   Table,
@@ -327,6 +328,7 @@ export const DepartmentBoardDownloadPage = () => {
                 <Tr>
                   <Th>게시글 번호</Th>
                   <Th>제목</Th>
+                  <Th>출처 URL</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -334,6 +336,19 @@ export const DepartmentBoardDownloadPage = () => {
                   <Tr key={`${success.articleNo}-${index}`}>
                     <Td>{success.articleNo ?? "-"}</Td>
                     <Td>{success.title || "-"}</Td>
+                    <Td>
+                      {success.sourceUrl ? (
+                        <Link
+                          href={success.sourceUrl}
+                          color="blue.600"
+                          wordBreak="break-all"
+                        >
+                          {success.sourceUrl}
+                        </Link>
+                      ) : (
+                        "-"
+                      )}
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>

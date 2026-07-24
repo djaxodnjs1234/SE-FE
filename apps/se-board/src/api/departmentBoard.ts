@@ -20,6 +20,7 @@ export interface DepartmentBoardFailure {
 export interface DepartmentBoardSuccess {
   articleNo?: number | string;
   title?: string;
+  sourceUrl?: string;
 }
 
 export interface DepartmentBoardResult {
